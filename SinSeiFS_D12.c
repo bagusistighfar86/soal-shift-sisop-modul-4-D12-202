@@ -10,50 +10,50 @@
 #include <time.h>
 #include <unistd.h>
 
-static char *path_dir = "/home/bagus/Downloads";
-static char *path_log = "/home/bagus/SinSeiFS.log";
-static char *ATOZ = "AtoZ_";
-const int INFO = 1;
-const int WARNING = 2;
+static char *path_dir = "/home/bagus/Downloads"; //direktori yang digunakan
+static char *path_log = "/home/bagus/SinSeiFS.log"; //direktori log
+static char *ATOZ = "AtoZ_"; // code AtoZ
+const int INFO = 1; //flag info
+const int WARNING = 2; //flag warning
 
-void log_v1(char *from, char *to) {
+void log_v1(char *from, char *to) { //membuat log nomor 1
     int i;
     for (i = strlen(to); i >= 0; i--) {
-        if (to[i] == '/') break;
+        if (to[i] == '/') break; //mengabaikan tanda /
     }
-    if (strstr(to + i, ATOZ) == NULL) return;
+    if (strstr(to + i, ATOZ) == NULL) return; // kalau hasil rename tanpa AtoZ, diabaikan
 
-    FILE *log_file = fopen(path_log, "a");
-    fprintf(log_file, "%s -> %s\n", from, to);
+    FILE *log_file = fopen(path_log, "a"); //buka file log
+    fprintf(log_file, "%s -> %s\n", from, to); //tulis isi file log
 }
 
-void log_v2(char *str, int type) {
-    FILE *log_file = fopen(path_log, "a");
+void log_v2(char *str, int type) { // membuat log nomor 4
+    FILE *log_file = fopen(path_log, "a"); //membuka file log
 
     time_t current_time;
     time(&current_time);
     struct tm *time_info;
-    time_info = localtime(&current_time);
+    time_info = localtime(&current_time); //mengambil current time komputer
 
-    if (type == INFO) {
-        if(time_info->tm_mon+1 < 10){
-            fprintf(log_file, "INFO::%d0%d%d-%d:%d:%d:%s\n", time_info->tm_mday,
+    if (type == INFO) { //tipe info
+        if(time_info->tm_mon+1 < 10){ //bulan 1 sampai 9
+            fprintf(log_file, "INFO::%d0%d%d-%d:%d:%d:%s\n", time_info->tm_mday,    
                     time_info->tm_mon+1, time_info->tm_year+1900, time_info->tm_hour,
-                    time_info->tm_min, time_info->tm_sec, str);
+                    time_info->tm_min, time_info->tm_sec, str); // tulis isi log
         }
-        else{
+        else{ // bulan 10 sampai 12
             fprintf(log_file, "INFO::%d%d%d-%d:%d:%d:%s\n", time_info->tm_mday,
                     time_info->tm_mon+1, time_info->tm_year+1900, time_info->tm_hour,
-                    time_info->tm_min, time_info->tm_sec, str);
+                    time_info->tm_min, time_info->tm_sec, str); //tulis isi log
         }
     } 
-    else if (type == WARNING) {
-        if(time_info->tm_mon+1 < 10){
+    else if (type == WARNING) { // tipe warning
+        if(time_info->tm_mon+1 < 10){ //bulan 1 sampai 9
             fprintf(log_file, "WARNING::%d0%d%d-%d:%d:%d:%s\n", time_info->tm_mday,
                     time_info->tm_mon+1, time_info->tm_year+1900, time_info->tm_hour,
-                    time_info->tm_min, time_info->tm_sec, str);
+                    time_info->tm_min, time_info->tm_sec, str); //tulis isi log
         }
-        else{
+        else{ //bulan 10 sampai 12
             fprintf(log_file, "WARNING::%d%d%d-%d:%d:%d:%s\n", time_info->tm_mday,
                     time_info->tm_mon+1, time_info->tm_year+1900, time_info->tm_hour,
                     time_info->tm_min, time_info->tm_sec, str);
@@ -70,9 +70,9 @@ void atbash(char *str, int start, int end) {
         if (i != start && str[i] == '.') break; // jika telah menemukan format ekstensi file yang diawali titik maka diabaikan
 
         if (str[i] >= 'A' && str[i] <= 'Z')
-            str[i] = 'Z' + 'A' - str[i];
+            str[i] = 'Z' + 'A' - str[i]; //atbash huruf kapital
         else if (str[i] >= 'a' && str[i] <= 'z')
-            str[i] = 'z' + 'a' - str[i];
+            str[i] = 'z' + 'a' - str[i]; //atbash huruf kecil
     }
 }
 
@@ -81,7 +81,7 @@ void atbash(char *str, int start, int end) {
 */
 void encode_atbash(char *str) {
     if (!strcmp(str, ".") || !strcmp(str, "..")) return; // Untuk current dan parent directory tidak perlu di encode
-    atbash(str, 0, strlen(str));
+    atbash(str, 0, strlen(str)); //memanggil fungsi atbash
 
     printf("==== enc:atb:%s\n", str);
 }
@@ -175,8 +175,8 @@ static int xmp_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
         /*
             Pemanggilan proses encode_atbash
         */
-        if (enc1 != NULL) {
-            encode_atbash(de->d_name);
+        if (enc1 != NULL) { // kalau path folder ada AtoZ_
+            encode_atbash(de->d_name); //encode
             printf("== readdir::encode:%s\n", de->d_name);
         }
 
@@ -197,13 +197,13 @@ static int xmp_mkdir(const char *path, mode_t mode) {
     } else
         sprintf(fpath, "%s%s", path_dir, path);
 
-    log_v1(path_dir, fpath);
+    log_v1(path_dir, fpath); //membuat log jika ada folder baru
 
     int res = mkdir(fpath, mode);
 
     char str[100];
-    sprintf(str, "MKDIR::%s", path);
-    log_v2(str, INFO);
+    sprintf(str, "MKDIR::%s", path); //merangkai isi log MKDIR
+    log_v2(str, INFO); //memanggil fungsi membuat log nomor 4
 
     if (res == -1) return -errno;
     return 0;
@@ -227,8 +227,8 @@ static int xmp_mknod(const char *path, mode_t mode, dev_t rdev) {
         res = mknod(fpath, mode, rdev);
 
     char str[100];
-    sprintf(str, "CREATE::%s", path);
-    log_v2(str, INFO);
+    sprintf(str, "CREATE::%s", path); //merangkai isi log CREATE
+    log_v2(str, INFO); //memanggil fungsi membuat log nomor 4
 
     if (res == -1) return -errno;
     return 0;
@@ -252,8 +252,8 @@ static int xmp_unlink(const char *path) {
     int res = unlink(fpath);
 
     char str[100];
-    sprintf(str, "REMOVE::%s", path);
-    log_v2(str, WARNING);
+    sprintf(str, "REMOVE::%s", path); //merangkai isi log REMOVE
+    log_v2(str, WARNING); //memanggil fungsi log nomor 4
 
     if (res == -1) return -errno;
 
