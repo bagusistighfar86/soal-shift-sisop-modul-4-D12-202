@@ -37,11 +37,11 @@ void log_v2(char *str, int type) {
 
     if (type == INFO) {
         fprintf(log_file, "INFO::%d%d%d-%d:%d:%d:%s\n", time_info->tm_mday,
-                time_info->tm_mon, time_info->tm_year, time_info->tm_hour,
+                time_info->tm_mon+1, time_info->tm_year+1900, time_info->tm_hour,
                 time_info->tm_min, time_info->tm_sec, str);
     } else if (type == WARNING) {
         fprintf(log_file, "WARNING::%d%d%d-%d:%d:%d:%s\n", time_info->tm_mday,
-                time_info->tm_mon, time_info->tm_year, time_info->tm_hour,
+                time_info->tm_mon+1, time_info->tm_year+1900, time_info->tm_hour,
                 time_info->tm_min, time_info->tm_sec, str);
     }
 }
