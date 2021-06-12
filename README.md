@@ -192,3 +192,41 @@ void log_v2(char *str, int type) {
 }
 ```
 Fungsi log_v2 ini akan dipanggil pada semua fungsi yang lain agar semua aktivitas pada FUSE dapat ditulis pada log tersebut. Pertama-tama fungsi ini akan membuka path dari log yaitu direktori pengguna (home), kemudian fungsi akan mengambil waktu yang terdapat pada komputer kita menggunakan ```localtime(&current_time)```. Setelah itu fungsi akan memilah yang mana yang INFO dan WARNING (ada di parameter fungsi), dan menuliskan hasilnya sesuai struktur log pada soal.
+
+## Output 
+Pertama - tama, folder Downloads terdapat file sebagai berikut :
+
+[![Whats-App-Image-2021-06-12-at-21-46-57.jpg](https://i.postimg.cc/d1CkjN1q/Whats-App-Image-2021-06-12-at-21-46-57.jpg)](https://postimg.cc/qhkvkLyY)
+
+Kemudian kita menjalankan program Fuse ```SinSeiFS.c``` dengan cara sebagai berikut :
+
+[![Whats-App-Image-2021-06-12-at-21-46-57-1.jpg](https://i.postimg.cc/tg3GdhjK/Whats-App-Image-2021-06-12-at-21-46-57-1.jpg)](https://postimg.cc/wtjrgR32)
+
+Maka akan muncul FUSE Modul4 yang isinya sama seperti folder Downloads seperti berikut :
+
+[![Whats-App-Image-2021-06-12-at-21-46-57-2.jpg](https://i.postimg.cc/6qTPPZk5/Whats-App-Image-2021-06-12-at-21-46-57-2.jpg)](https://postimg.cc/Mf2tMnZh)
+
+Kemudian kita mencoba membuat folder baru bernama ```AtoZ_new``` seperti berikut :
+
+[![Whats-App-Image-2021-06-12-at-21-46-57-3.jpg](https://i.postimg.cc/htKYFHW5/Whats-App-Image-2021-06-12-at-21-46-57-3.jpg)](https://postimg.cc/ykrjcpNm)
+
+Selanjutnya kita coba pindahkan file ```halo.txt``` ke folder ```AtoZ_new``` dan hasilnya nama file ```halo.txt``` akan ter-encode menjadi :
+
+[![Whats-App-Image-2021-06-12-at-21-46-57-4.jpg](https://i.postimg.cc/MGQV9p32/Whats-App-Image-2021-06-12-at-21-46-57-4.jpg)](https://postimg.cc/WDsd3TPX)
+
+Kita mencoba me-rename folder ```AtoZ_new``` menjadi ```new``` untuk membuat folder tersebut menjadi tidak ter-encode lagi :
+
+[![Whats-App-Image-2021-06-12-at-21-46-57-5.jpg](https://i.postimg.cc/m2p9RH0W/Whats-App-Image-2021-06-12-at-21-46-57-5.jpg)](https://postimg.cc/crYCBrxF)
+
+Maka file ```halo.txt``` akan menjadi seperti semula seperti gambar berikut :
+
+[![Whats-App-Image-2021-06-12-at-21-46-57-6.jpg](https://i.postimg.cc/1z0swggS/Whats-App-Image-2021-06-12-at-21-46-57-6.jpg)](https://postimg.cc/Ny03wj7C)
+
+Kami juga mencoba me-rename folder ```hola``` menjadi ```AtoZ_hola```, dan hasilnya semua folder dan isi didalamnya juga ikut ter-encode (rekursif)
+
+[![Whats-App-Image-2021-06-12-at-21-46-57-7.jpg](https://i.postimg.cc/Bbz04HzT/Whats-App-Image-2021-06-12-at-21-46-57-7.jpg)](https://postimg.cc/hQVw0zcv)
+
+Kemudian yang terakhir, ada file ```SinSeiFS.log``` pada home directory yang jika dibuka isinya adalah :
+
+[![Whats-App-Image-2021-06-12-at-21-46-57-9.jpg](https://i.postimg.cc/K8fy86Cc/Whats-App-Image-2021-06-12-at-21-46-57-9.jpg)](https://postimg.cc/YvvPXspT)
+
