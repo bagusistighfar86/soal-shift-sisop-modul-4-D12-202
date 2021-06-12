@@ -306,7 +306,11 @@ static int xmp_open(const char *path, struct fuse_file_info *fi) {  // open file
     int res;
     res = open(fpath, fi->flags);
     if (res == -1) return -errno;
-
+    
+    char str[100];
+    sprintf(str, "OPEN::%s", path);
+    log_v2(str, INFO);
+    
     close(res);
     return 0;
 }
@@ -327,6 +331,10 @@ static int xmp_read(const char *path, char *buf, size_t size, off_t offset,
     (void)fi;
     fd = open(fpath, O_RDONLY);
     if (fd == -1) return -errno;
+    
+    char str[100];
+    sprintf(str, "READ::%s", path);
+    log_v2(str, INFO);
 
     res = pread(fd, buf, size, offset);
     if (res == -1) res = -errno;
